@@ -36,7 +36,7 @@
     <h3>All Expenses</h3>
     <ul id="expenseList"></ul>
 
-    <!-- HTML near .premium-div -->
+    <!-- HTML  of .premium-div -->
     <div class="premium-div">
       <div id="premiumInfo"></div>
       <button class="premium-btn" id="premiumBtn">Get Premium</button>
@@ -46,16 +46,16 @@
       </button>
     </div>
 
-    <button onclick="download()" id="downloadexpense">Download File</button>
+    <button id="downloadexpense">Download File</button>
 
     <!-- Leaderboard modal (hidden by default) -->
 
     <h3>Leaderboard</h3>
     <ul id="leaderboardList"></ul>
-
-    <!------------------------------------------------- Js --------------------------------------------------->
-    <!------------------------------------------------- Js --------------------------------------------------->
-    <!------------------------------------------------- Js --------------------------------------------------->
+    ======================================
+    <!-- ==============================================    ============================================== -->
+    <!-- ============================================== Js ============================================== -->
+    <!-- ==============================================    ============================================== -->
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
@@ -141,13 +141,13 @@
             }
           })
           .catch((err) => {
-            showError(err);
+            console.log(err);
           });
       }
-      // payment
+
+      // ############################# Payment Buttton ##########################
+
       const premiumBtn = document.getElementById("premiumBtn");
-      const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
-      const closeLeaderboard = document.getElementById("closeLeaderboard");
       const premiumInfo = document.getElementById("premiumInfo");
 
       premiumBtn.addEventListener("click", async () => {
@@ -196,16 +196,6 @@
         }
       });
 
-      // async function checkPremiumStatus() {
-      //   const res = await axios.get("http://localhost:3000/user/details", {
-      //     headers: { Authorization: `Bearer ${token}` },
-      //   });
-      //   if (res.data.isPremium) {
-      //     document.querySelector(".premium-div").innerHTML =
-      //       "<p>You are a Premium User 🌟</p>";
-      //   }
-      // }
-
       async function checkPremiumStatus() {
         try {
           const res = await axios.get("http://localhost:3000/user/details", {
@@ -228,6 +218,10 @@
           console.error("Error checking premium:", err);
         }
       }
+
+      // ############################# LeaderBord Buttton ##########################
+
+      const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
 
       async function fetchLeaderboard() {
         try {
@@ -262,6 +256,8 @@
       getExpenses();
       checkPremiumStatus();
       showLeaderboardBtn.addEventListener("click", fetchLeaderboard);
+      const downloadbutton = document.getElementById("downloadexpense");
+      downloadbutton.addEventListener("click", download);
     </script>
   </body>
 </html>
