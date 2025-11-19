@@ -4,62 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Signup Page</title>
+    <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: #f4f4f4;
-      }
-      form {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
-      }
-      h2 {
-        text-align: center;
-      }
-      input {
-        width: 90%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      button {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        background: #007bff;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #0056b3;
-      }
-    </style>
   </head>
   <body>
-    <form id="signupForm">
-      <h2>Sign Up</h2>
-      <input type="text" id="name" placeholder="Name" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Sign Up</button>
-    </form>
-    <a href="login.html">Already a user: Login </a>
+    <div class="signup-container">
+      <div class="signup-form-wrapper">
+        <form id="signupForm" class="signup-form">
+          <h2>Sign Up</h2>
+          <input type="text" id="name" placeholder="Name" required />
+          <input type="email" id="email" placeholder="Email" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <div class="signup-link">
+          Already a user? <a href="login.html"> Login</a>
+        </div>
+
+        <div id="errorContainer"></div>
+      </div>
+    </div>
 
     <script>
       const form = document.getElementById("signupForm");
+      const errorContainer = document.getElementById("errorContainer");
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        errorContainer.innerHTML = ""; // Clear previous errors
+
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
@@ -75,12 +54,17 @@
           );
 
           if (response.status == 201) {
+            alert("Signup successful! Please login.");
             window.location.href = "login.html";
           } else {
-            throw new Error("Failed to login");
+            throw new Error("Failed to signup");
           }
         } catch (err) {
-          document.body.innerHTML += `<div style="color:red; margin-top:10px;">${err}</div>`;
+          const errorMsg =
+            err.response?.data?.message ||
+            err.message ||
+            "Signup failed. Please try again.";
+          errorContainer.innerHTML = `<div class="error-message">${errorMsg}</div>`;
         }
       });
     </script>

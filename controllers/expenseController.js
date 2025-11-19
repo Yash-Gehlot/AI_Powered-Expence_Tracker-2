@@ -6,7 +6,7 @@ exports.addExpense = async (req, res) => {
   const t = await sequelize.transaction(); // START transaction
 
   try {
-    const { amount, category, description } = req.body;
+    const { amount, category, description, note } = req.body;
     const userId = req.user.id;
 
     // Fetch real Sequelize user instance
@@ -23,6 +23,7 @@ exports.addExpense = async (req, res) => {
         amount,
         category,
         description,
+        note,
         userId: userId,
       },
       { transaction: t }

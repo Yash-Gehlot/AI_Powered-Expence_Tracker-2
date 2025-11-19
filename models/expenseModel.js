@@ -27,6 +27,10 @@ const Expense = sequelize.define(
       allowNull: false,
       field: "user_id",
     },
+    note: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "Dailyexp",
