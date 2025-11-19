@@ -1,6 +1,7 @@
 const Expense = require("../models/expenseModel");
 const User = require("../models/userModel");
 const sequelize = require("../config/db");
+const makeCategory = require("../config/gimini-category");
 
 exports.addExpense = async (req, res) => {
   const t = await sequelize.transaction(); // START transaction
@@ -8,6 +9,12 @@ exports.addExpense = async (req, res) => {
   try {
     const { amount, category, description, note } = req.body;
     const userId = req.user.id;
+
+    let finalCategory =
+      category && category.trim() !== ""
+        ? category
+        : await makeCategory(description);
+    console.log(finalCategory);
 
     // Fetch real Sequelize user instance
     const user = await User.findByPk(userId, { transaction: t });
@@ -21,7 +28,7 @@ exports.addExpense = async (req, res) => {
     const expense = await Expense.create(
       {
         amount,
-        category,
+        category: finalCategory,
         description,
         note,
         userId: userId,
