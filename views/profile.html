@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile - Expense Tracker</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body class="profile-page-body">
+    <div class="profile-container">
+      <!-- Header -->
+      <header class="profile-header">
+        <div class="profile-header-content">
+          <a href="expense.html" class="profile-back-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Dashboard
+          </a>
+          <h1>User Profile</h1>
+        </div>
+      </header>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="profile-loading-state">
+        <div class="profile-spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+
+      <!-- Profile Content -->
+      <div id="profileContent" class="profile-content" style="display: none">
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <div class="profile-avatar-circle" id="userAvatar">
+              <span id="avatarInitial">U</span>
+            </div>
+            <div
+              class="profile-premium-badge"
+              id="premiumBadge"
+              style="display: none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                ></polygon>
+              </svg>
+              Premium
+            </div>
+          </div>
+
+          <div class="profile-info">
+            <h2 id="userName">Loading...</h2>
+            <p id="userEmail">Loading...</p>
+            <div class="profile-account-status" id="accountStatus">
+              <span class="profile-status-badge" id="statusBadge"
+                >Free Account</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Details -->
+        <div class="profile-details-section">
+          <h3 class="profile-section-title">Account Details</h3>
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <div class="profile-detail-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div class="profile-detail-content">
+                <label>Full Name</label>
+                <p id="detailName">-</p>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="profile-detail-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  ></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <div class="profile-detail-content">
+                <label>Email Address</label>
+                <p id="detailEmail">-</p>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="profile-detail-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <polyline points="17 11 19 13 23 9"></polyline>
+                </svg>
+              </div>
+              <div class="profile-detail-content">
+                <label>User ID</label>
+                <p id="detailId">-</p>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="profile-detail-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  ></polygon>
+                </svg>
+              </div>
+              <div class="profile-detail-content">
+                <label>Membership Status</label>
+                <p id="detailMembership">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Premium Features Section -->
+        <div
+          class="profile-features-section"
+          id="premiumFeatures"
+          style="display: none"
+        >
+          <h3 class="profile-section-title">Premium Features</h3>
+          <div class="profile-features-grid">
+            <div class="profile-feature-card">
+              <div class="profile-feature-icon">📊</div>
+              <h4>Leaderboard Access</h4>
+              <p>View your ranking among all users</p>
+            </div>
+            <div class="profile-feature-card">
+              <div class="profile-feature-icon">📥</div>
+              <h4>Export Data</h4>
+              <p>Download your expenses anytime</p>
+            </div>
+            <div class="profile-feature-card">
+              <div class="profile-feature-icon">🎯</div>
+              <h4>Advanced Analytics</h4>
+              <p>Get detailed spending insights</p>
+            </div>
+            <div class="profile-feature-card">
+              <div class="profile-feature-icon">🌟</div>
+              <h4>Priority Support</h4>
+              <p>Get help when you need it</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="profile-action-section">
+          <button
+            class="profile-btn profile-btn-back"
+            onclick="window.location.href='expense.html'"
+          >
+            Back to Dashboard
+          </button>
+          <button class="profile-btn profile-btn-logout" id="logoutBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="profile-error-state" style="display: none">
+        <div class="profile-error-icon">⚠️</div>
+        <h3>Unable to Load Profile</h3>
+        <p id="errorMessage">Something went wrong. Please try again.</p>
+        <button
+          class="profile-btn profile-btn-retry"
+          onclick="loadUserProfile()"
+        >
+          Retry
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+
+      // Check authentication
+      if (!token) {
+        alert("Please login first!");
+        window.location.href = "login.html";
+      }
+
+      // Load user profile on page load
+      document.addEventListener("DOMContentLoaded", loadUserProfile);
+
+      async function loadUserProfile() {
+        const loadingState = document.getElementById("loadingState");
+        const profileContent = document.getElementById("profileContent");
+        const errorState = document.getElementById("errorState");
+
+        // Show loading state
+        loadingState.style.display = "flex";
+        profileContent.style.display = "none";
+        errorState.style.display = "none";
+
+        try {
+          const response = await axios.get(
+            "http://localhost:3000/user/details",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const user = response.data;
+
+          // Update profile information
+          updateProfileUI(user);
+
+          // Hide loading, show content
+          loadingState.style.display = "none";
+          profileContent.style.display = "block";
+        } catch (error) {
+          console.error("Error loading profile:", error);
+
+          // Show error state
+          loadingState.style.display = "none";
+          errorState.style.display = "flex";
+
+          if (error.response && error.response.status === 401) {
+            document.getElementById("errorMessage").textContent =
+              "Your session has expired. Please login again.";
+            setTimeout(() => {
+              localStorage.removeItem("token");
+              window.location.href = "login.html";
+            }, 2000);
+          } else {
+            document.getElementById("errorMessage").textContent =
+              error.response?.data?.message ||
+              "Unable to load profile. Please try again.";
+          }
+        }
+      }
+
+      function updateProfileUI(user) {
+        // Get initials for avatar
+        const initials = user.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .substring(0, 2);
+
+        // Update avatar
+        document.getElementById("avatarInitial").textContent = initials;
+
+        // Update name and email
+        document.getElementById("userName").textContent = user.name;
+        document.getElementById("userEmail").textContent = user.email;
+
+        // Update detail fields
+        document.getElementById("detailName").textContent = user.name;
+        document.getElementById("detailEmail").textContent = user.email;
+        document.getElementById("detailId").textContent = `#${user.id}`;
+
+        // Update premium status
+        if (user.isPremium) {
+          document.getElementById("premiumBadge").style.display = "flex";
+          document.getElementById("statusBadge").textContent = "Premium Member";
+          document.getElementById("statusBadge").classList.add("premium");
+          document.getElementById("detailMembership").textContent =
+            "Premium Member 🌟";
+          document.getElementById("premiumFeatures").style.display = "block";
+        } else {
+          document.getElementById("premiumBadge").style.display = "none";
+          document.getElementById("statusBadge").textContent = "Free Account";
+          document.getElementById("detailMembership").textContent =
+            "Free Account";
+          document.getElementById("premiumFeatures").style.display = "none";
+        }
+      }
+
+      // Logout functionality
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("pageSize");
+          window.location.href = "login.html";
+        }
+      });
+    </script>
+  </body>
+</html>
