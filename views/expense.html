@@ -10,29 +10,90 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   </head>
 
-  <body>
-    <div class="container">
+  <body class="expense-page-body">
+    <div class="expense-main-container">
       <!-- Header Section -->
-      <header class="header">
+      <header class="expense-header">
         <h1>Expense Tracker</h1>
-        <div class="premium-section">
-          <div id="premiumInfo"></div>
-          <button class="btn btn-premium" id="premiumBtn">Get Premium</button>
-          <button
-            class="btn btn-leaderboard"
-            id="showLeaderboardBtn"
-            style="display: none"
-          >
-            Show Leaderboard
-          </button>
+        <div class="expense-header-right">
+          <div class="expense-premium-section">
+            <div id="premiumInfo" class="expense-premium-info"></div>
+            <button class="expense-btn expense-btn-premium" id="premiumBtn">
+              Get Premium
+            </button>
+            <button
+              class="expense-btn expense-btn-leaderboard"
+              id="showLeaderboardBtn"
+              style="display: none"
+            >
+              Show Leaderboard
+            </button>
+          </div>
+
+          <!-- User Profile Dropdown -->
+          <div class="expense-user-dropdown">
+            <button class="expense-user-icon-btn" id="userIconBtn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </button>
+            <div class="expense-dropdown-menu" id="userDropdown">
+              <a href="profile.html" class="expense-dropdown-item">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                View Profile
+              </a>
+              <a href="#" class="expense-dropdown-item" id="logoutBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Logout
+              </a>
+            </div>
+          </div>
         </div>
       </header>
 
       <!-- Add Expense Form -->
-      <section class="form-section">
+      <section class="expense-form-section">
         <h2>Add New Expense</h2>
         <form id="expenseForm" class="expense-form">
-          <div class="form-group">
+          <div class="expense-form-group">
             <input
               type="number"
               id="amount"
@@ -41,16 +102,16 @@
               required
             />
           </div>
-          <div class="form-group">
+          <div class="expense-form-group">
             <select id="category" name="category" required>
-              <option value="">Ai Category</option>
+              <option value="">Select Category</option>
               <option value="fuel">Fuel</option>
               <option value="movie">Movie</option>
               <option value="sports">Sports</option>
               <option value="rent">Rent</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="expense-form-group">
             <input
               type="text"
               id="description"
@@ -59,26 +120,31 @@
               required
             />
           </div>
-          <div class="form-group">
-            <input type="text" id="note" name="note" placeholder="note" />
+          <div class="expense-form-group">
+            <input type="text" id="note" name="note" placeholder="Note" />
           </div>
-          <button type="submit" class="btn btn-primary">Add Expense</button>
+          <button type="submit" class="expense-btn expense-btn-primary">
+            Add Expense
+          </button>
         </form>
       </section>
 
       <!-- Expenses List Section -->
-      <section class="expenses-section">
-        <div class="section-header">
+      <section class="expense-list-section">
+        <div class="expense-section-header">
           <h3>All Expenses</h3>
-          <div class="controls">
+          <div class="expense-controls">
             <label for="pageSizeSelector">Show:</label>
-            <select id="pageSizeSelector" class="page-selector">
+            <select id="pageSizeSelector" class="expense-page-selector">
               <option value="2">2</option>
               <option value="5">5</option>
               <option value="8">8</option>
               <option value="10">10</option>
             </select>
-            <button class="btn btn-download" id="downloadexpense">
+            <button
+              class="expense-btn expense-btn-download"
+              id="downloadexpense"
+            >
               Download File
             </button>
           </div>
@@ -87,17 +153,21 @@
         <ul id="expenseList" class="expense-list"></ul>
 
         <!-- Pagination -->
-        <div class="pagination">
-          <button class="btn btn-secondary" id="prevPage">Previous</button>
-          <span id="pageInfo" class="page-info"></span>
-          <button class="btn btn-secondary" id="nextPage">Next</button>
+        <div class="expense-pagination">
+          <button class="expense-btn expense-btn-secondary" id="prevPage">
+            Previous
+          </button>
+          <span id="pageInfo" class="expense-page-info"></span>
+          <button class="expense-btn expense-btn-secondary" id="nextPage">
+            Next
+          </button>
         </div>
       </section>
 
       <!-- Leaderboard Section -->
-      <section class="leaderboard-section">
+      <section class="expense-leaderboard-section">
         <h3>Leaderboard</h3>
-        <ul id="leaderboardList" class="leaderboard-list"></ul>
+        <ul id="leaderboardList" class="expense-leaderboard-list"></ul>
       </section>
     </div>
 
@@ -112,6 +182,9 @@
       const premiumInfo = document.getElementById("premiumInfo");
       const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
       const downloadbutton = document.getElementById("downloadexpense");
+      const userIconBtn = document.getElementById("userIconBtn");
+      const userDropdown = document.getElementById("userDropdown");
+      const logoutBtn = document.getElementById("logoutBtn");
       const token = localStorage.getItem("token");
 
       let currentPage = 1;
@@ -133,6 +206,32 @@
       // ==============================================
 
       document.getElementById("pageSizeSelector").value = pageSize;
+
+      // ==============================================
+      // User Dropdown Functions
+      // ==============================================
+
+      userIconBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle("show");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".expense-user-dropdown")) {
+          userDropdown.classList.remove("show");
+        }
+      });
+
+      // Logout function
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("pageSize");
+          window.location.href = "login.html";
+        }
+      });
 
       // ==============================================
       // Expense Functions
@@ -310,7 +409,7 @@
                 alert("Payment verification failed.");
               }
             },
-            theme: { color: "#528FF0" },
+            theme: { color: "#6b9bd1" },
           };
 
           const rzp = new Razorpay(options);

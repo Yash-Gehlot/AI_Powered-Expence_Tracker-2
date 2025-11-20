@@ -3,68 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signup Page</title>
+    <title>Sign Up - Expense Tracker</title>
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
-  <body>
-    <div class="signup-container">
-      <div class="signup-form-wrapper">
-        <form id="signupForm" class="signup-form">
-          <h2>Sign Up</h2>
-          <input type="text" id="name" placeholder="Name" required />
-          <input type="email" id="email" placeholder="Email" required />
+  <body class="auth-page-body">
+    <div class="auth-container">
+      <h2>Create Account</h2>
+
+      <form id="signupForm" class="auth-form">
+        <div class="auth-form-group">
+          <label for="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+
+        <div class="auth-form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="auth-form-group">
+          <label for="password">Password</label>
           <input
             type="password"
             id="password"
-            placeholder="Password"
+            name="password"
+            placeholder="Create a password"
             required
           />
-          <button type="submit">Sign Up</button>
-        </form>
-
-        <div class="signup-link">
-          Already a user? <a href="login.html"> Login</a>
         </div>
 
-        <div id="errorContainer"></div>
+        <button type="submit">Create Account</button>
+      </form>
+
+      <div id="errorMsg" class="auth-error-message" style="display: none"></div>
+
+      <div class="auth-links">
+        <p>Already have an account? <a href="login.html">Login</a></p>
       </div>
     </div>
 
     <script>
       const form = document.getElementById("signupForm");
-      const errorContainer = document.getElementById("errorContainer");
+      const errorMsg = document.getElementById("errorMsg");
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        errorContainer.innerHTML = ""; // Clear previous errors
 
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const password = document.getElementById("password").value;
+
+        errorMsg.style.display = "none";
 
         try {
-          const response = await axios.post(
-            "http://localhost:3000/user/signup",
-            {
-              name,
-              email,
-              password,
-            }
-          );
+          await axios.post("http://localhost:3000/user/signup", {
+            name,
+            email,
+            password,
+          });
 
-          if (response.status == 201) {
-            alert("Signup successful! Please login.");
-            window.location.href = "login.html";
-          } else {
-            throw new Error("Failed to signup");
-          }
-        } catch (err) {
-          const errorMsg =
-            err.response?.data?.message ||
-            err.message ||
-            "Signup failed. Please try again.";
-          errorContainer.innerHTML = `<div class="error-message">${errorMsg}</div>`;
+          // Show success and redirect
+          alert("Account created successfully! Please login.");
+          window.location.href = "login.html";
+        } catch (error) {
+          errorMsg.textContent =
+            error.response?.data?.message || "Signup failed. Please try again.";
+          errorMsg.style.display = "block";
         }
       });
     </script>

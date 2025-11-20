@@ -3,46 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login Page</title>
+    <title>Login - Expense Tracker</title>
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
-  <body>
+  <body class="auth-page-body">
     <div class="auth-container">
-      <h2>Login</h2>
+      <h2>Welcome Back</h2>
+
       <form id="loginForm" class="auth-form">
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" required />
+        <div class="auth-form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
         </div>
 
-        <div>
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required />
+        <div class="auth-form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
         </div>
 
-        <button type="submit" style="background-color: skyblue">Login</button>
+        <button type="submit">Login</button>
       </form>
 
-      <div class="auth-links">
-        <a href="forgotPassword.html">Forgot Password?</a>
-      </div>
-
-      <p id="message" class="auth-message" style="color: red"></p>
+      <div id="errorMsg" class="auth-error-message" style="display: none"></div>
 
       <div class="auth-links">
-        Don't have an Account? <a href="signup.html">Signup NOW</a>
+        <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+        <p><a href="forgotPassword.html">Forgot Password?</a></p>
       </div>
     </div>
 
     <script>
       const form = document.getElementById("loginForm");
-      const message = document.getElementById("message");
+      const errorMsg = document.getElementById("errorMsg");
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
         const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const password = document.getElementById("password").value;
+
+        errorMsg.style.display = "none";
 
         try {
           const response = await axios.post(
@@ -53,24 +66,15 @@
             }
           );
 
-          if (response.status === 200 && response.data.token) {
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("user", JSON.stringify(response.data.user));
-            alert("User logged in successfully!");
-            window.location.href = "expense.html";
-          }
-        } catch (err) {
-          if (err.response) {
-            if (err.response.status === 404) {
-              message.textContent = "User not found!";
-            } else if (err.response.status === 401) {
-              message.textContent = "Incorrect password!";
-            } else {
-              message.textContent = "Login failed. Please try again.";
-            }
-          } else {
-            message.textContent = "Backend not connected yet!";
-          }
+          // Store token
+          localStorage.setItem("token", response.data.token);
+
+          // Redirect to expense page
+          window.location.href = "expense.html";
+        } catch (error) {
+          errorMsg.textContent =
+            error.response?.data?.message || "Login failed. Please try again.";
+          errorMsg.style.display = "block";
         }
       });
     </script>
