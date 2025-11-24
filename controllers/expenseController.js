@@ -14,7 +14,6 @@ exports.addExpense = async (req, res) => {
       category && category.trim() !== ""
         ? category
         : await makeCategory(description);
-    console.log(finalCategory);
 
     // Fetch real Sequelize user instance
     const user = await User.findByPk(userId, { transaction: t });
@@ -67,9 +66,7 @@ exports.getExpenses = async (req, res) => {
 
     // Read page number from query (default = 1)
     const page = parseInt(req.query.page) || 1;
-
-    // Read page size from query (default = 10)
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 5;
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Expense.findAndCountAll({
@@ -137,17 +134,3 @@ exports.deleteExpense = async (req, res) => {
     res.status(500).json({ message: "Failed to delete expense" });
   }
 };
-
-// exports.getExpenses = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-//     const expenses = await Expense.findAll({
-//       where: { userId: userId }
-//     });
-
-//     res.status(200).json(expenses);
-//   } catch (error) {
-//     console.error("Get expenses error:", error);
-//     res.status(500).json({ message: "Error fetching expenses" });
-//   }
-// };

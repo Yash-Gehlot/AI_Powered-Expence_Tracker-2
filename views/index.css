@@ -9,17 +9,15 @@
 }
 
 :root {
-  /* Soft & Calm Color Palette */
   --primary: #6b9bd1;
   --primary-dark: #4a7ba7;
-  --primary-light: #a8c9e8;
-  --secondary: #8b9dc3;
+  --primary-light: #97c5ef;
+  --secondary: #7292d7;
   --accent: #b4a7d6;
-  --success: #7fb88d;
+  --success: #52b76c;
   --warning: #f4a261;
-  --danger: #e76f51;
+  --danger: #f84215;
 
-  /* Neutrals */
   --bg-main: #f5f7fa;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;

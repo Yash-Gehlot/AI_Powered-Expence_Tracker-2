@@ -1,6 +1,3 @@
-
-
-// controllers/premiumController.js
 const User = require("../models/userModel");
 
 exports.getLeaderboard = async (req, res) => {

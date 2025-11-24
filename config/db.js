@@ -9,12 +9,6 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: "mysql",
     logging: false, // Set to console.log to see SQL queries
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
     define: {
       timestamps: false,
       freezeTableName: true,
@@ -23,27 +17,12 @@ const sequelize = new Sequelize(
   }
 );
 
-// Test the connection
-sequelize
-  .authenticate()
-  .then(() => {
+(async () => {
+  try {
+    await sequelize.authenticate();
     console.log("✅ MySQL Connected via Sequelize");
-  })
-  .catch((err) => {
-    console.error("❌ Unable to connect to the database:", err);
-  });
-
+  } catch (error) {
+    console.error("❌ Unable to connect to the database:", error);
+  }
+})();
 module.exports = sequelize;
-
-// const mysql = require("mysql2");
-// const db = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-// });
-// db.connect((err) => {
-//   if (err) throw err;
-//   console.log("✅ MySQL Connected");
-// });
-// module.exports = db;

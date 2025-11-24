@@ -104,7 +104,7 @@
           </div>
           <div class="expense-form-group">
             <select id="category" name="category" required>
-              <option value="">Select Category</option>
+              <option value="">Ai Category</option>
               <option value="fuel">Fuel</option>
               <option value="movie">Movie</option>
               <option value="sports">Sports</option>
@@ -172,10 +172,6 @@
     </div>
 
     <script>
-      // ==============================================
-      // Global Variables & DOM Elements
-      // ==============================================
-
       const form = document.getElementById("expenseForm");
       const list = document.getElementById("expenseList");
       const premiumBtn = document.getElementById("premiumBtn");
@@ -186,11 +182,10 @@
       const userDropdown = document.getElementById("userDropdown");
       const logoutBtn = document.getElementById("logoutBtn");
       const token = localStorage.getItem("token");
+      let isPremiumUser = false;
 
       let currentPage = 1;
-      let pageSize = localStorage.getItem("pageSize")
-        ? parseInt(localStorage.getItem("pageSize"))
-        : 10;
+      let pageSize = 2;
 
       // ==============================================
       // Authentication Check
@@ -214,13 +209,6 @@
       userIconBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         userDropdown.classList.toggle("show");
-      });
-
-      // Close dropdown when clicking outside
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".expense-user-dropdown")) {
-          userDropdown.classList.remove("show");
-        }
       });
 
       // Logout function
@@ -277,6 +265,14 @@
             }
           );
 
+          totalPages = res.data.totalPages;
+
+          if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
+            await getExpenses(); // Recursively call with corrected page
+            return; // Exit this call
+          }
+
           list.innerHTML = "";
 
           res.data.expenses.forEach((exp) => {
@@ -316,17 +312,17 @@
             }
           );
 
-          getExpenses();
-          fetchLeaderboard();
+          await getExpenses();
+          if (isPremiumUser) {
+            fetchLeaderboard();
+          }
         } catch (error) {
           console.error("Delete error:", error);
           alert("Failed to delete expense");
         }
       }
 
-      // ==============================================
       // Download Function
-      // ==============================================
 
       async function download() {
         axios
@@ -357,6 +353,8 @@
           const res = await axios.get("http://localhost:3000/user/details", {
             headers: { Authorization: `Bearer ${token}` },
           });
+
+          isPremiumUser = res.data.isPremium;
 
           if (res.data.isPremium) {
             premiumInfo.innerHTML =
@@ -493,10 +491,6 @@
       document
         .getElementById("pageSizeSelector")
         .addEventListener("change", changePageSize);
-
-      // ==============================================
-      // Initialize Application
-      // ==============================================
 
       getExpenses();
       checkPremiumStatus();
