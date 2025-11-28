@@ -1,49 +1,53 @@
-const express = require("express");
+import express from "express";
+import dotenv from "dotenv";
+import db from "./config/db.js";
+import path from "path";
+import cors from "cors";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ quiet: true });
+
 const app = express();
 
-require("dotenv").config();
-
-const db = require("./config/db");
-const path = require("path");
-
-const cors = require("cors");
 app.use(cors());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "views")));
-
-// default Route
+// Root route - redirect to login BEFORE serving static files
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "login.html"));
+  res.redirect("/login/login.html");
 });
 
-// Routes
-const userRoutes = require("./routes/userRoutes");
+// Serve static files from views folder
+app.use(express.static(path.join(__dirname, "views")));
+
+// ROUTES
+import userRoutes from "./routes/userRoutes.js";
 app.use("/user", userRoutes);
 
-const expenseRoutes = require("./routes/expenseRoutes");
+import expenseRoutes from "./routes/expenseRoutes.js";
 app.use("/expense", expenseRoutes);
 
-const paymentRoutes = require("./routes/paymentRoutes");
+import paymentRoutes from "./routes/paymentRoutes.js";
 app.use("/payment", paymentRoutes);
 
-const premiumRoutes = require("./routes/premiumRoutes");
+import premiumRoutes from "./routes/premiumRoutes.js";
 app.use("/premium", premiumRoutes);
 
-const forgotPasswordRoutes = require("./routes/ForgetPassRoutes");
+import forgotPasswordRoutes from "./routes/ForgetPassRoutes.js";
 app.use("/password", forgotPasswordRoutes);
 
+// START SERVER
 const PORT = process.env.PORT;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+// DB SYNC
 (async () => {
   try {
     await db.sync({ force: false });
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
   } catch (error) {
     console.log(error);
   }

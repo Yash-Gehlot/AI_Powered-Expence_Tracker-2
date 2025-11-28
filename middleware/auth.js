@@ -1,10 +1,8 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-require("dotenv").config();
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
-async function authenticateToken(req, res, next) {
+export const authenticateToken = async (req, res, next)=> {
   try {
-    // Get token from header
     const authHeader = req.header("Authorization");
 
     let token;
@@ -15,30 +13,25 @@ async function authenticateToken(req, res, next) {
     }
 
     if (!token) {
-      console.log("No token found in request"); // Debug log
+      console.log("No token found in request");
       return res
         .status(401)
         .json({ message: "Access denied. No token provided." });
     }
 
-    // Decode JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Fetch REAL sequelize model instance
     const user = await User.findByPk(decoded.userId);
 
     if (!user) {
-      console.log("User not found for userId:", decoded.userId); // Debug log
+      console.log("User not found for userId:", decoded.userId);
       return res.status(401).json({ message: "User not found." });
     }
 
-    req.user = user; // ✔ real Sequelize instance
+    req.user = user;
     next();
   } catch (err) {
     console.error("Auth error:", err.message);
-    console.error("Full error:", err); // More detailed error log
     return res.status(403).json({ message: "Invalid token." });
   }
 }
-
-module.exports = authenticateToken;

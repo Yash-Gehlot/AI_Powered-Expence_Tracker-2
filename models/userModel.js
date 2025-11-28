@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
-const Expense = require("./expenseModel");
-const ForgotPassword = require("./forgotPassModel");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
+import Expense from "./expenseModel.js";
+import ForgotPassword from "./forgotPassModel.js";
 
 const User = sequelize.define(
   "User",
@@ -49,5 +49,4 @@ Expense.belongsTo(User, { foreignKey: "userId" });
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
 
-module.exports = Expense;
-module.exports = User;
+export default User;

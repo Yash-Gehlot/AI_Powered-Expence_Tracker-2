@@ -1,9 +1,8 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-require("dotenv").config();
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -30,7 +29,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -47,16 +46,11 @@ exports.login = async (req, res) => {
     }
 
     // Generate token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
 
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user.id, name: user.name, email: user.email },
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -64,7 +58,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getUserDetails = async (req, res) => {
+export const getUserDetails = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "name", "email", "isPremium"],

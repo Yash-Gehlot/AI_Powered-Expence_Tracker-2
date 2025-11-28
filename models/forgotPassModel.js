@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
 const ForgotPasswordRequests = sequelize.define("ForgotPassword", {
   id: {
@@ -12,5 +12,4 @@ const ForgotPasswordRequests = sequelize.define("ForgotPassword", {
     defaultValue: true,
   },
 });
-
-module.exports = ForgotPasswordRequests;
+export default ForgotPasswordRequests;

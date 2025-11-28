@@ -1,10 +1,10 @@
-const Expense = require("../models/expenseModel");
-const User = require("../models/userModel");
-const sequelize = require("../config/db");
-const makeCategory = require("../config/gimini-category");
+import Expense from "../models/expenseModel.js";
+import User from "../models/userModel.js";
+import sequelize from "../config/db.js";
+import makeCategory from "../config/gimini-category.js";
 
-exports.addExpense = async (req, res) => {
-  const t = await sequelize.transaction();  
+export const addExpense = async (req, res) => {
+  const t = await sequelize.transaction();
 
   try {
     const { amount, category, description, note } = req.body;
@@ -60,14 +60,13 @@ exports.addExpense = async (req, res) => {
   }
 };
 
-exports.getExpenses = async (req, res) => {
+export const getExpenses = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Read page number from query (default = 1)
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-    const offset = (page - 1) * limit;
+    const page = parseInt(req.query.page) || 1; // page = which page user wants
+    const limit = parseInt(req.query.limit) || 5; // how many items per page
+    const offset = (page - 1) * limit; // how many rows to skip
 
     const { count, rows } = await Expense.findAndCountAll({
       where: { userId },
@@ -91,7 +90,7 @@ exports.getExpenses = async (req, res) => {
   }
 };
 
-exports.deleteExpense = async (req, res) => {
+export const deleteExpense = async (req, res) => {
   const t = await sequelize.transaction();
 
   try {
@@ -132,5 +131,33 @@ exports.deleteExpense = async (req, res) => {
     await t.rollback();
     console.error("Delete error:", error);
     res.status(500).json({ message: "Failed to delete expense" });
+  }
+};
+
+export const suggestCategory = async (req, res) => {
+  try {
+    const { description } = req.body;
+
+    if (!description || description.trim() === "") {
+      return res.status(400).json({
+        message: "Description is required",
+        category: "",
+      });
+    }
+
+    // Call the AI function to generate category
+    const category = await makeCategory(description);
+
+    res.status(200).json({
+      success: true,
+      category: category,
+    });
+  } catch (error) {
+    console.error("Category suggestion error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error suggesting category",
+      category: "other",
+    });
   }
 };

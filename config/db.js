@@ -1,5 +1,7 @@
-const { Sequelize } = require("sequelize");
-require("dotenv").config();
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config({ quiet: true });
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -8,7 +10,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql",
-    logging: false, // Set to console.log to see SQL queries
+    logging: false,  
     define: {
       timestamps: false,
       freezeTableName: true,
@@ -25,4 +27,4 @@ const sequelize = new Sequelize(
     console.error("❌ Unable to connect to the database:", error);
   }
 })();
-module.exports = sequelize;
+export default sequelize;

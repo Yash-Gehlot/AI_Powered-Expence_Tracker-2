@@ -1,11 +1,9 @@
-const sendPasswordResetMail = require("../mail/forgetPassword-mailer");
-const ForgotPassword = require("../models/forgotPassModel");
-const User = require("../models/userModel");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
-const Sib = require("sib-api-v3-sdk");
+import ForgotPassword from "../models/forgotPassModel.js";
+import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
+import Sib from "sib-api-v3-sdk";
 
-exports.forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -42,10 +40,9 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-exports.resetPasswordPage = async (req, res) => {
+export const resetPasswordPage = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("Reset Request ID = ", id);
 
     const request = await ForgotPassword.findOne({ where: { id } });
 
@@ -70,7 +67,7 @@ exports.resetPasswordPage = async (req, res) => {
   }
 };
 
-exports.updatePassword = async (req, res) => {
+export const updatePassword = async (req, res) => {
   try {
     const { password } = req.body;
     const id = req.params.id;

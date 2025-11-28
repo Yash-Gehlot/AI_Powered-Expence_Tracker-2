@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const premiumController = require("../controllers/premiumController");
-const authenticate = require("../middleware/auth");
+import { getLeaderboard } from "../controllers/premiumController.js";
 
-router.get("/leaderboard", authenticate, premiumController.getLeaderboard);
+import {authenticateToken} from "../middleware/auth.js";
 
-module.exports = router;
+router.get("/leaderboard", authenticateToken, getLeaderboard);
+
+export default router;

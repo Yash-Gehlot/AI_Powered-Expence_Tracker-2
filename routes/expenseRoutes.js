@@ -1,14 +1,16 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
   addExpense,
   getExpenses,
   deleteExpense,
-} = require("../controllers/expenseController");
-const authenticateToken = require("../middleware/auth");
+  suggestCategory,
+} from "../controllers/expenseController.js";
+import { authenticateToken } from "../middleware/auth.js";
 
 router.post("/addExpense", authenticateToken, addExpense);
 router.get("/getExpense", authenticateToken, getExpenses);
 router.delete("/deleteExpense/:id", authenticateToken, deleteExpense);
+router.post("/suggestCategory", authenticateToken, suggestCategory);
 
-module.exports = router;
+export default router;

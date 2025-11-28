@@ -1,6 +1,6 @@
-const User = require("../models/userModel");
+import User from "../models/userModel.js";
 
-exports.getLeaderboard = async (req, res) => {
+export const getLeaderboard = async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: ["id", "name", "totalExpense"],

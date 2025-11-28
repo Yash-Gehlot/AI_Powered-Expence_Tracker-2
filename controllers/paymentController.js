@@ -1,9 +1,9 @@
-const Razorpay = require("razorpay");
-const crypto = require("crypto");
-require("dotenv").config();
-const User = require("../models/userModel");
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
-exports.createOrder = async (req, res) => {
+import User from "../models/userModel.js";
+
+export const createOrder = async (req, res) => {
   try {
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -29,8 +29,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// Verify Payment
-exports.verifyPayment = async (req, res) => {
+export const verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
@@ -57,4 +56,4 @@ exports.verifyPayment = async (req, res) => {
     res.status(500).json({ success: false, message: "Verification failed" });
   }
 };
-
+// export default { createOrder, verifyPayment };

@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+import DataTypes from "sequelize";
+import sequelize from "../config/db.js";
 
 const Expense = sequelize.define(
   "Expense",
@@ -38,8 +38,7 @@ const Expense = sequelize.define(
   }
 );
 
-module.exports = Expense;
-
+export default Expense;
 // const db = require("../config/db");
 
 // const Expense = {
