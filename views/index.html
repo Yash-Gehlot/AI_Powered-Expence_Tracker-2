@@ -372,8 +372,7 @@
                 const li = document.createElement("li");
                 li.innerHTML = `
                 <span>${exp.amount} - ${exp.category} - ${exp.description} ${exp.note}</span>
-                <button onclick="deleteExpense(${exp.id})">Delete</button>
-              `;
+                <button onclick="deleteExpense('${exp._id}')">Delete</button>              `;
                 list.appendChild(li);
               });
             }
