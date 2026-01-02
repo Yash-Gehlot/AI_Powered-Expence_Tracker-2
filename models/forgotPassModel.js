@@ -1,15 +1,22 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
-const ForgotPasswordRequests = sequelize.define("ForgotPassword", {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
+const forgotPasswordSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: uuidv4, // Generates UUID like your old system
   },
   isActive: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    type: Boolean,
+    default: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
 });
-export default ForgotPasswordRequests;
+
+const ForgotPassword = mongoose.model("ForgotPassword", forgotPasswordSchema);
+
+export default ForgotPassword;

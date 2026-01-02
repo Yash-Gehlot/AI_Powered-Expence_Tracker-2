@@ -1,52 +1,30 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
-import Expense from "./expenseModel.js";
-import ForgotPassword from "./forgotPassModel.js";
+import mongoose from "mongoose";
 
-const User = sequelize.define(
-  "User",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-      },
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    isPremium: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    totalExpense: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
   },
-  {
-    tableName: "users",
-    timestamps: false, // Disabled to match existing database schema
-    freezeTableName: true,  
-  }
-);
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  isPremium: {
+    type: Boolean,
+    default: false,
+  },
+  totalExpense: {
+    type: Number,
+    default: 0,
+  },
+});
 
-User.hasMany(Expense, { foreignKey: "userId" });
-Expense.belongsTo(User, { foreignKey: "userId" });
-
-User.hasMany(ForgotPassword);
-ForgotPassword.belongsTo(User);
+const User = mongoose.model("User", userSchema); //mongoose need a name to associate the schema with a name. we have to specify with mongoose.model()
 
 export default User;

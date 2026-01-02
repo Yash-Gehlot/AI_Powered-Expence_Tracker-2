@@ -1,77 +1,59 @@
 import Expense from "../models/expenseModel.js";
 import User from "../models/userModel.js";
-import sequelize from "../config/db.js";
 import makeCategory from "../config/gimini-category.js";
 
 export const addExpense = async (req, res) => {
-  const t = await sequelize.transaction(); //Creates a transaction
-
   try {
     const { amount, category, description, note } = req.body;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
-    const user = await User.findByPk(userId);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const expense = await Expense.create(
-      // OPERATIONS
-      {
-        amount,
-        category,
-        description,
-        note,
-        userId: userId,
-      },
-      { transaction: t }
-    );
+    await Expense.create({
+      amount,
+      category,
+      description,
+      note,
+      userId: userId,
+    });
 
-    await user.update(
-      // OPERATIONS
-      {
-        totalExpense: user.totalExpense + Number(amount),
-      },
-      { transaction: t }
-    );
-
-    await t.commit(); //Saves all changes permanently - only if everything succeeded.
+    user.totalExpense = user.totalExpense + Number(amount);
+    await user.save();
 
     res.status(200).json({
       message: "Expense added successfully",
     });
   } catch (error) {
     console.error("Add expense error:", error);
-
-    await t.rollback(); //Cancels all changes - if anything failed.
-
     res.status(500).json({ message: "Error adding expense" });
   }
 };
 
 export const getExpenses = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
-    const page = parseInt(req.query.page) || 1; // page = which page user wants
-    const limit = parseInt(req.query.limit) || 5; // how many rows per page
-    const offset = (page - 1) * limit; // how many rows to skip
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
 
-    const { count, rows } = await Expense.findAndCountAll({
-      where: { userId },
-      limit: limit,
-      offset: offset,
-      order: [["id", "DESC"]],
-    });
+    const expenses = await Expense.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    const totalPages = Math.ceil(count / limit); // Math.ceil(Round UP) Math.floor (Round DOWN)
+    const totalCount = await Expense.countDocuments({ userId });
+    const totalPages = Math.ceil(totalCount / limit);
 
     res.status(200).json({
-      expenses: rows,
+      expenses: expenses,
       currentPage: page,
       totalPages,
-      totalItems: count,
+      totalItems: totalCount,
       limit,
     });
   } catch (error) {
@@ -81,40 +63,33 @@ export const getExpenses = async (req, res) => {
 };
 
 export const deleteExpense = async (req, res) => {
-  const t = await sequelize.transaction();
-
   try {
     const expId = req.params.id;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const expense = await Expense.findOne({
-      where: { id: expId, userId },
-      transaction: t,
+      _id: expId,
+      userId,
     });
 
     if (!expense) {
-      await t.rollback();
       return res.status(404).json({ message: "Expense not found" });
     }
 
-    const user = await User.findByPk(userId, { transaction: t });
+    const user = await User.findById(userId);
 
     if (!user) {
-      await t.rollback();
       return res.status(404).json({ message: "User not found" });
     }
 
     const newTotal = Number(user.totalExpense) - Number(expense.amount);
+    user.totalExpense = newTotal;
+    await user.save();
 
-    await user.update({ totalExpense: newTotal }, { transaction: t });
-
-    await expense.destroy({ transaction: t });
-
-    await t.commit();
+    await Expense.deleteOne({ _id: expId });
 
     res.status(200).json({ message: "Expense deleted and total updated" });
   } catch (error) {
-    await t.rollback();
     console.error("Delete error:", error);
     res.status(500).json({ message: "Failed to delete expense" });
   }

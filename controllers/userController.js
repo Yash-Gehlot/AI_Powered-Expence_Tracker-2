@@ -6,12 +6,12 @@ export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(403).json({ message: "Email already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10); //10 → Salt rounds (how many times to scramble)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
       name,
@@ -30,17 +30,17 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password); //Checks if the password matches the hashed password in database.
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET); // Generating token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
     res.status(200).json({
       message: "Login successful",
@@ -54,9 +54,9 @@ export const login = async (req, res) => {
 
 export const getUserDetails = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: ["id", "name", "email", "isPremium"],
-    });
+    const user = await User.findById(req.user._id).select(
+      "name email isPremium"
+    );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

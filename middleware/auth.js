@@ -7,7 +7,6 @@ export const authenticateToken = async (req, res, next) => {
 
     let token;
     if (authHeader && authHeader.startsWith("Bearer ")) {
-      //checking if token exist in header or not?
       token = authHeader.split(" ")[1];
     }
 
@@ -20,14 +19,14 @@ export const authenticateToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findByPk(decoded.userId);
+    const user = await User.findById(decoded.userId);
 
     if (!user) {
       console.log("User not found for userId:", decoded.userId);
       return res.status(401).json({ message: "User not found." });
     }
 
-    req.user = user; // This attaches user data to the request object, making it available in next functions.
+    req.user = user;
     next();
   } catch (err) {
     console.error("Auth error:", err.message);

@@ -2,11 +2,10 @@ import User from "../models/userModel.js";
 
 export const getLeaderboard = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ["id", "name", "totalExpense"],
-      order: [["totalExpense", "DESC"]],
-      limit: 50,
-    });
+    const users = await User.find()
+      .select("name totalExpense")
+      .sort({ totalExpense: -1 })
+      .limit(50);
 
     const leaderboard = users.map((u, index) => ({
       rank: index + 1,

@@ -7,19 +7,19 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(200).json({ message: "If email exists, link sent." }); // not reveal whether an account exists."
+      return res.status(200).json({ message: "If email exists, link sent." });
     }
 
     const request = await ForgotPassword.create({
       isActive: true,
-      UserId: user.id,
+      userId: user._id,
     });
 
-    const resetLink = `http://localhost:3000/password/resetpassword/${request.id}`;
+    const resetLink = `http://localhost:3000/password/resetpassword/${request._id}`;
 
-    const client = Sib.ApiClient.instance; //Sets up authentication with Sendinblue API
+    const client = Sib.ApiClient.instance;
     client.authentications["api-key"].apiKey = process.env.SENDINBLUE_API_KEY;
 
     const tranEmailApi = new Sib.TransactionalEmailsApi();
@@ -44,7 +44,7 @@ export const resetPasswordPage = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const request = await ForgotPassword.findOne({ where: { id } });
+    const request = await ForgotPassword.findById(id);
 
     if (!request || request.isActive === false) {
       return res.status(400).send("Invalid or expired link");
@@ -72,19 +72,21 @@ export const updatePassword = async (req, res) => {
     const { password } = req.body;
     const id = req.params.id;
 
-    const request = await ForgotPassword.findOne({ where: { id } });
+    const request = await ForgotPassword.findById(id);
 
     if (!request || request.isActive === false) {
       return res.status(400).send("Link expired");
     }
 
-    const user = await User.findByPk(request.UserId);
+    const user = await User.findById(request.userId);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await user.update({ password: hashedPassword });
+    user.password = hashedPassword;
+    await user.save();
 
-    await request.update({ isActive: false });
+    request.isActive = false;
+    await request.save();
 
     res.send("Password updated successfully");
   } catch (err) {
